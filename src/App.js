@@ -18,8 +18,8 @@ function App() {
   return (
     <ul>
       {samurai.map((samurai) => (
-        // <li key={samurai.name}>{samurai.name}</li>
-        <li key={samurai.type}>{samurai.type}</li>
+        <li key={samurai.name}>{samurai.name}</li>
+        // <li key={samurai.type}>{samurai.type}</li>
       ))}
     </ul>
   );
