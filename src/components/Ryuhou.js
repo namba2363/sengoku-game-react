@@ -8,9 +8,7 @@ const Ryuhou = () => {
     const [samuraiDetails, setSamuraiDetails] = useState(null);
     const [power, setPower] = useState(null);  // powerの状態を追加
 
-    useEffect(() => {
-        getSamuraiDetails();
-    }, []);
+    useEffect(() => {getSamuraiDetails();}, []);
 
     async function getSamuraiDetails() {
         let { data } = await supabase

@@ -22,7 +22,20 @@ const Eisei = () => {
 
         // buryokuとchiryokuを掛け合わせてpowerを計算
         if (data) {
-            setPower(data.buryoku * data.chiryoku);
+
+            if(data.chara<11){
+                setPower(12);
+                //setPower(data.buryoku * data.chiryoku);
+                
+            }else{
+                
+                setPower(data.buryoku * data.chiryoku);
+            }
+        
+        
+        
+        
+        
         }
     }
 
