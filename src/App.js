@@ -9,19 +9,33 @@ const supabase = createClient(process.env.REACT_APP_URL, process.env.REACT_APP_A
 
 function App() {
   const [samurai, setSamurai] = useState([]);
+  const [gogyou, setGogyou] = useState([]);//追加
+  const [gogyou2, setGogyou2] = useState([]);//追加
+
 
   useEffect(() => {
     getSamurai();
+    getGogyou();//追加
+    getGogyou2();//追加
   }, []);
 
-  async function getSamurai() {
+   async function getSamurai() {
     const { data } = await supabase.from("samurai").select();
     setSamurai(data);
   }
 
-  return (
-    <Router>
+  async function getGogyou() {
+    const { data } = await supabase.from("gogyou").select();
+    setGogyou(data);
+  }//追加
 
+  async function getGogyou2() {
+    const { data } = await supabase.from("gogyou").select();
+    setGogyou2(data);
+  }//追加
+
+ return (
+    <Router>
       <Routes>
         <Route path="/samurai/1" element={<Eisei />} />
         <Route path="/samurai/2" element={<Ryuhou />} />  // 新しいルートを追加
