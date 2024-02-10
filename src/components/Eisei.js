@@ -1,111 +1,89 @@
-// components/Ryuhou.js
 import React, { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(process.env.REACT_APP_URL, process.env.REACT_APP_ANON);
 
 const Eisei = () => {
-    const [samuraiDetails, setSamuraiDetails] = useState([]);
-    const [power, setPower] = useState(null);  // powerの状態を追加
-    const [gogyouDetails, setGogyouDetails] = useState([]);//追加
-    const [gogyou2Details, setGogyou2Details] = useState([]);//追加
-    const [gogyouOptions, setGogyouOptions] = useState([]);
-    const [samurai01Options, setSamurai01Options] = useState([]);
-    const [samurai02Options, setSamurai02Options] = useState([]);
-    const [random2, setRandom2] = useState(null);  //追加
+    const [samuraiDetails, setSamuraiDetails] = useState(null); // Samuraiの詳細情報の状態
+    const [power, setPower] = useState(null); // Powerの状態
+    const [gogyouDetails, setGogyouDetails] = useState(null); // Gogyouの詳細情報の状態
+    const [gogyouOptions, setGogyouOptions] = useState([]); // Gogyouのオプションリストの状態
+    const [samurai01Options, setSamurai01Options] = useState([]); // Samurai01のオプションリストの状態
+    const [samurai02Options, setSamurai02Options] = useState([]); // Samurai02のオプションリストの状態
+    const [random2, setRandom2] = useState(null); // Random2の状態
 
     useEffect(() => {
         getSamuraiDetails();
         getGogyouDetails();
-        getGogyou2Details();
         getGogyouOptions();
         getSamurai01Options();
         getSamurai02Options();
     }, []);
 
     async function getSamuraiDetails() {
-        let { data } = await supabase
+        let { data, error } = await supabase
             .from("samurai")
             .select("*")
-            .eq("id", 1)  // Query for the samurai with id of 1
+            .eq("id", 1)
             .single();
+        if (error) {
+            console.error("Error fetching samurai details:", error);
+            return;
+        }
         setSamuraiDetails(data);
 
-
-        if (data) {
-
-            if (data.chara < 11) {
-                setPower(12);
-                //setPower(data.buryoku * data.chiryoku);
-
-            } else {
-                var random = Math.floor(Math.random() * 11);
-                //console.log(random);
-                setPower(random);
-                //setPower(data.buryoku * data.chiryoku);
-                //setPower(20);
-
-            }
-        }
+        let calculatedPower = data ? (data.chara < 11 ? 12 : Math.floor(Math.random() * 11)) : null;
+        setPower(calculatedPower);
     }
 
     async function getGogyouDetails() {
-        var random2 = Math.floor(Math.random() * 11);
-        setRandom2(random2);
-        let gogyouId = random2 < 6 ? 1 : 2;
+        let randomValue = Math.floor(Math.random() * 11);
+        setRandom2(randomValue);
+        let gogyouId = randomValue < 6 ? 1 : 2;
         let { data, error } = await supabase
             .from("gogyou")
             .select("*")
             .eq("gogyou_id", gogyouId)
             .single();
         if (error) {
-            console.error(error);
-        } else {
-            setGogyouDetails(data);
+            console.error("Error fetching Gogyou details:", error);
+            return;
         }
+        setGogyouDetails(data);
     }
-
-    async function getGogyou2Details() {
-        let gogyou2Data = [];
-        for (var i = 1; i <= 5; i++) {
-            let { data, error } = await supabase
-                .from("gogyou")
-                .select("*")
-                .eq("gogyou_id", i)
-                .single();
-            if (error) {
-                console.error(error);
-            } else {
-                gogyou2Data.push(data);
-            }
-        }
-        setGogyou2Details(gogyou2Data);
-    }
-
 
     async function getGogyouOptions() {
-        let { data } = await supabase
+        let { data, error } = await supabase
             .from("gogyou")
-            .select("*")
+            .select("*");
+        if (error) {
+            console.error("Error fetching Gogyou options:", error);
+            return;
+        }
         setGogyouOptions(data);
     }
 
-
     async function getSamurai01Options() {
-        let { data } = await supabase
+        let { data, error } = await supabase
             .from("samurai")
             .select("*")
-            .eq("chara", 11 )  
-           
+            .eq("chara", 11);
+        if (error) {
+            console.error("Error fetching Samurai01 options:", error);
+            return;
+        }
         setSamurai01Options(data);
     }
 
     async function getSamurai02Options() {
-        let { data } = await supabase
+        let { data, error } = await supabase
             .from("samurai")
             .select("*")
-            .eq("chara", 21)  
-           
+            .eq("chara", 21);
+        if (error) {
+            console.error("Error fetching Samurai02 options:", error);
+            return;
+        }
         setSamurai02Options(data);
     }
 
@@ -116,97 +94,68 @@ const Eisei = () => {
             <h1>Samurai Details</h1>
             <table>
                 <tbody>
+                    {samuraiDetails && (
+                        <>
+                            <tr>
+                                <th>Name</th>
+                                <td>{samuraiDetails.name}</td>
+                            </tr>
+                            <tr>
+                                <th>Type</th>
+                                <td>{samuraiDetails.type}</td>
+                            </tr>
+                            <tr>
+                                <th>Buryoku</th>
+                                <td>{samuraiDetails.buryoku}</td>
+                            </tr>
+                            <tr>
+                                <th>Chiryoku</th>
+                                <td>{samuraiDetails.chiryoku}</td>
+                            </tr>
+                            <tr>
+                                <th>Power</th>
+                                <td>{power}</td>
+                            </tr>
+                        </>
+                    )}
                     <tr>
-                        <th>Name</th>
-                        <td>{samuraiDetails.name}</td>
-                    </tr>
-                    <tr>
-                        <th>Type</th>
-                        <td>{samuraiDetails.type}</td>
-                    </tr>
-                    <tr>
-                        <th>Buryoku</th>
-                        <td>{samuraiDetails.buryoku}</td>
-                    </tr>
-                    <tr>
-                        <th>Chiryoku</th>
-                        <td>{samuraiDetails.chiryoku}</td>
-                    </tr>
-                    <tr>
-                        <th>Random試作</th>
-                        <td>{power}</td>
-                    </tr>
-
-                    <tr>
-                        <th>５以下は火、６以上は木</th>
+                        <th>Random Value</th>
                         <td>{random2}</td>
                     </tr>
                     <tr>
-                        <th>５以下は火、６以上は木</th>
-                        <td>{gogyouDetails.zokusei}</td>
+                        <th>Gogyou Attribute</th>
+                        <td>{gogyouDetails?.zokusei}</td>
                     </tr>
-
-                    <ul class="menu">
-                        <li><a href="#">メニュー１</a></li>
-                        <li class="dropdown">
-                            <a href="#">メニュー２</a>
-                            <ul class="submenu">
-                                <li><a href="#">サブメニュー１</a></li>
-                                <li><a href="#">サブメニュー２</a></li>
-                                <li><a href="#">サブメニュー３</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <tr>
-                    <select>
-                        {gogyouOptions.map((gogyou, index) => (
-                            <option key={index}>{gogyou.zokusei}</option>
-                        ))}
-                        {gogyouDetails && <option>{gogyouDetails.zokusei}</option>}
-                    </select>
-                    </tr>
-                    <tr>
-                    <select>
-                        {samurai01Options.map((samurai, index) => (
-                            <option key={index}>{samurai.name}  {samurai.type}</option>
-                        ))}
-                        {samurai02Options.map((samurai, index) => (
-                            <option key={index}>{samurai.name}  {samurai.type}</option>
-                        ))}
-
-                    </select>
-                    </tr> 
-                    <tr>
-                    <select>
-                        {samurai02Options.map((samurai, index) => (
-                            <option key={index}>{samurai.name}  {samurai.type}</option>
-                        ))}
-
-                    </select>
-
-
-                    </tr>                   
-                    <button type="button" >
-                        バトル開始
-                    </button>
-                    
-                    <button onclick="buttonClick()">Button 
-                   </button>
-
-                   <script>function buttonClick(){
-                        
-                     }</script>
-            
                 </tbody>
-
             </table>
-            
+
+            <div>
+                <h2>Gogyou Options</h2>
+                <select>
+                    {gogyouOptions.map((option, index) => (
+                        <option key={index} value={option.gogyou_id}>{option.zokusei}</option>
+                    ))}
+                </select>
+            </div>
+            <div>
+                <h2>Samurai 01 Options</h2>
+                <select>
+                    {samurai01Options.map((option, index) => (
+                        <option key={index} value={option.id}>{option.name}</option>
+                    ))}
+                </select>
+            </div>
+            <div>
+                <h2>Samurai 02 Options</h2>
+                <select>
+                    {samurai02Options.map((option, index) => (
+                        <option key={index} value={option.id}>{option.name}</option>
+                    ))}
+                </select>
+            </div>
+            <button type="button" onClick={() => console.log('Battle Start')}>バトル開始</button>
         </div>
-       
-
-
     );
-
 };
 
 export default Eisei;
