@@ -10,6 +10,8 @@ const Eisei = () => {
     const [gogyouDetails, setGogyouDetails] = useState([]);//追加
     const [gogyou2Details, setGogyou2Details] = useState([]);//追加
     const [gogyouOptions, setGogyouOptions] = useState([]);
+    const [samurai01Options, setSamurai01Options] = useState([]);
+    const [samurai02Options, setSamurai02Options] = useState([]);
     const [random2, setRandom2] = useState(null);  //追加
 
     useEffect(() => {
@@ -17,6 +19,8 @@ const Eisei = () => {
         getGogyouDetails();
         getGogyou2Details();
         getGogyouOptions();
+        getSamurai01Options();
+        getSamurai02Options();
     }, []);
 
     async function getSamuraiDetails() {
@@ -87,6 +91,24 @@ const Eisei = () => {
     }
 
 
+    async function getSamurai01Options() {
+        let { data } = await supabase
+            .from("samurai")
+            .select("*")
+            .eq("chara", 11 )  
+           
+        setSamurai01Options(data);
+    }
+
+    async function getSamurai02Options() {
+        let { data } = await supabase
+            .from("samurai")
+            .select("*")
+            .eq("chara", 21)  
+           
+        setSamurai02Options(data);
+    }
+
     if (!samuraiDetails) return <div>Loading...</div>;
 
     return (
@@ -135,16 +157,54 @@ const Eisei = () => {
                             </ul>
                         </li>
                     </ul>
-
+                    <tr>
                     <select>
                         {gogyouOptions.map((gogyou, index) => (
                             <option key={index}>{gogyou.zokusei}</option>
                         ))}
                         {gogyouDetails && <option>{gogyouDetails.zokusei}</option>}
                     </select>
+                    </tr>
+                    <tr>
+                    <select>
+                        {samurai01Options.map((samurai, index) => (
+                            <option key={index}>{samurai.name}  {samurai.type}</option>
+                        ))}
+                        {samurai02Options.map((samurai, index) => (
+                            <option key={index}>{samurai.name}  {samurai.type}</option>
+                        ))}
+
+                    </select>
+                    </tr> 
+                    <tr>
+                    <select>
+                        {samurai02Options.map((samurai, index) => (
+                            <option key={index}>{samurai.name}  {samurai.type}</option>
+                        ))}
+
+                    </select>
+
+
+                    </tr>                   
+                    <button type="button" >
+                        バトル開始
+                    </button>
+                    
+                    <button onclick="buttonClick()">Button 
+                   </button>
+
+                   <script>function buttonClick(){
+                        
+                     }</script>
+            
                 </tbody>
+
             </table>
+            
         </div>
+       
+
+
     );
 
 };
